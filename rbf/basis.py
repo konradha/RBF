@@ -41,6 +41,7 @@ wen12 (Wendland, dim=1, k=2)          :math:`(1 - r/\epsilon)_+^5(8r^2/\epsilon^
 wen30 (Wendland, dim=3, k=0)          :math:`(1 - r/\epsilon)_+^2`                                                      0
 wen31 (Wendland, dim=3, k=1)          :math:`(1 - r/\epsilon)_+^4(4r/\epsilon + 1)`                                     0
 wen32 (Wendland, dim=3, k=2)          :math:`(1 - r/\epsilon)_+^6(35r^2/\epsilon^2 + 18r/\epsilon + 3)/3`               0
+gtps                                  :math: `GTPS of order 2`                                                          2
 ====================================  ================================================================================  =========
 
 References
@@ -69,7 +70,8 @@ from rbf.utils import assert_shape
 logger = logging.getLogger(__name__)
 
 
-R, EPS = sympy.symbols('r, eps')
+R = sympy.symbols('r')
+EPS = sympy.symbols('eps', real=True, positive=True)
 
 
 class RBF(object):
@@ -665,6 +667,11 @@ exp = RBF(sympy.exp(-R/EPS), cpd_order=0)
 # squared exponential
 se = RBF(sympy.exp(-R**2/(2*EPS**2)), cpd_order=0)
 
+# GTPS
+gtps = RBF(R ** (2 * EPS + 2) * (
+            (1 / (4 * (EPS + 1) ** 2)) * sympy.log(R) - (1 / (4 * (EPS + 1) ** 3))
+        ), tol=1e-4 * EPS, cpd_order=2)
+
 # Matern
 mat32 = RBF((1 + sympy.sqrt(3)*R/EPS) * sympy.exp(-sympy.sqrt(3)*R/EPS), tol=1e-8*EPS, cpd_order=0)
 mat52 = RBF((1 + sympy.sqrt(5)*R/EPS + 5*R**2/(3*EPS**2)) * sympy.exp(-sympy.sqrt(5)*R/EPS), tol=1e-4*EPS, cpd_order=0)
@@ -693,7 +700,8 @@ _PREDEFINED = {
     'ga':ga, 'exp':exp, 'se':se, 'mat32':mat32, 'mat52':mat52, 'wen10':wen10,
     'wen11':wen11, 'wen12':wen12, 'wen30':wen30, 'wen31':wen31, 'wen32':wen32,
     'spwen10':spwen10, 'spwen11':spwen11, 'spwen12':spwen12, 'spwen30':spwen30,
-    'spwen31':spwen31, 'spwen32':spwen32
+    'spwen31':spwen31, 'spwen32':spwen32,
+    'gtps': gtps,
     }
 
 add_precompiled_to_rbf_caches()
