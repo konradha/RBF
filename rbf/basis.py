@@ -669,7 +669,7 @@ se = RBF(sympy.exp(-R**2/(2*EPS**2)), cpd_order=0)
 # GTPS
 gtps = RBF(R ** (2 * EPS + 2) * (
             (1 / (4 * (EPS + 1) ** 2)) * sympy.log(R) - (1 / (4 * (EPS + 1) ** 3))
-        ))
+        ), tol=1e-4 * EPS, cpd_order=2)
 
 # Matern
 mat32 = RBF((1 + sympy.sqrt(3)*R/EPS) * sympy.exp(-sympy.sqrt(3)*R/EPS), tol=1e-8*EPS, cpd_order=0)
